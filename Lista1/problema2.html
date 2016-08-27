@@ -1,0 +1,110 @@
+<DOCTYPE! html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Problema 2</title>
+</head>
+
+<body>
+	<svg width="500" height="500" id="mysvg"> 
+	<g transform="scale(1,-0.5)" translate="(0,-500)">
+	</g>
+	</svg>
+	<script>
+
+	//Cabo da espada
+		var svg = document.getElementById("mysvg");
+		var circle1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		circle1.setAttribute("r", "20");
+		circle1.setAttribute("cx", "200");
+		circle1.setAttribute("cy", "100");
+		circle1.setAttribute("fill", "#E6BE8A");
+		svg.appendChild(circle1);
+
+		var rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		rect1.setAttribute("x", "186");
+		rect1.setAttribute("y", "100");
+		rect1.setAttribute("height", "100");
+		rect1.setAttribute("width", "27");
+		rect1.setAttribute("fill", "#E6BE8A");
+		svg.appendChild(rect1);
+
+		var svg = document.getElementById("mysvg");
+		var detailCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		detailCircle.setAttribute("r", "8");
+		detailCircle.setAttribute("cx", "200");
+		detailCircle.setAttribute("cy", "100");
+		detailCircle.setAttribute("fill", "white");
+		svg.appendChild(detailCircle);
+
+	// Base da espada
+		var circle2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		circle2.setAttribute("r", "15");
+		circle2.setAttribute("cx", "130");
+		circle2.setAttribute("cy", "200");
+		circle2.setAttribute("fill", "#E6BE8A");
+		svg.appendChild(circle2);
+
+		var baseDetail = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		baseDetail.setAttribute("x", "130");
+		baseDetail.setAttribute("y", "200");
+		baseDetail.setAttribute("height", "1");
+		baseDetail.setAttribute("width", "1");
+		baseDetail.setAttribute("fill", "#FAFAD2");
+		svg.appendChild(baseDetail);
+
+		var circle3 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		circle3.setAttribute("r", "15");
+		circle3.setAttribute("cx", "270");
+		circle3.setAttribute("cy", "200");
+		circle3.setAttribute("fill", "#E6BE8A");
+		svg.appendChild(circle3);
+
+		var baseDetail = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		baseDetail.setAttribute("x", "130");
+		baseDetail.setAttribute("y", "200");
+		baseDetail.setAttribute("height", "1");
+		baseDetail.setAttribute("width", "1");
+		baseDetail.setAttribute("fill", "#FAFAD2");
+		svg.appendChild(baseDetail);
+
+		var rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		rect1.setAttribute("x", "130");
+		rect1.setAttribute("y", "200");
+		rect1.setAttribute("height", "15");
+		rect1.setAttribute("width", "140");
+		rect1.setAttribute("fill", "#E6BE8A");
+		svg.appendChild(rect1);
+
+	// Lâmina da espada
+		var rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		rect1.setAttribute("x", "180");
+		rect1.setAttribute("y", "215");
+		rect1.setAttribute("height", "280");
+		rect1.setAttribute("width", "40");
+		rect1.setAttribute("fill", "#EEE8AA");
+		svg.appendChild(rect1);
+
+	// Ponta da espada
+		var triangle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		triangle.setAttribute("x", "180");
+		triangle.setAttribute("y", "480");
+		triangle.setAttribute("height", "20");
+		triangle.setAttribute("width", "40");
+		triangle.setAttribute("rotate", "90º")
+		triangle.setAttribute("fill", "#EEE8AA");
+		svg.appendChild(triangle);
+
+	// Detalhe da lâmina
+		var line = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		line.setAttribute("x", "200");
+		line.setAttribute("y", "215");
+		line.setAttribute("height", "300");
+		line.setAttribute("width", "1");
+		line.setAttribute("fill", "#FAFAD2");
+		svg.appendChild(line);
+
+	</script>
+</body>
+</html>
+</html>
