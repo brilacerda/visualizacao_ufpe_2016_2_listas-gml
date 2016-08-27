@@ -1,0 +1,30 @@
+<DOCTYPE! html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title> DOM Manipulation</title>
+</head>
+
+<body>
+<!-- [27.19, 28.25, 33.42, 46.57] -->
+	<svg width="500" height="500"> 
+	<g transform="scale(1,-0.5)" translate="(0,-500)">
+		<polyline fill="none" stroke="black" points="0 500 0 0 500 0"/>
+		<polyline fill="none" stroke="blue" stroke-width="2" points="80 27.19 160 300 400 240 500 1000"/>
+		<circle stroke="blue" fill="blue" r="3" cx="80" cy="27.19"></circle>
+		<circle stroke="blue" fill="blue" r="3" cx="160" cy="28.25"></circle>
+		<circle stroke="blue" fill="blue" r="3" cx="240" cy="33.42"></circle>
+		<circle stroke="blue" fill="blue" r="3" cx="320" cy="46.57"></circle>
+	</g>
+	</svg>
+	<script>
+		var svg = document.getElementById("mysvg");
+		var result = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+		result.setAttribute("r", "5");
+		result.setAttribute("cx", "100");
+		result.setAttribute("cy", "100");
+		svg.appendChild(result);
+	</script>
+</body>
+</html>
+</html>

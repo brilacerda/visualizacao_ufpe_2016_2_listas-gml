@@ -1,0 +1,59 @@
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+</head>
+<body>
+	<button onclick=newGraph()>I generate new graphs</button><br>
+	<svg height="auto" width="auto">
+		<g transform="scale(1,-1) translate(0, -500)"/>
+	</svg>
+	
+	<script type="text/javascript">
+
+	function newGraph() {
+		var dataset = randomArrayOfNumbers();
+		var x = d3.select("g").selectAll("rect").data(dataset);
+
+		x.enter().append("rect")
+				.attr("x",
+                    function(d, i){
+                        return (i*16);
+                    })
+                .attr("y", 0)
+                .attr("width", 15)
+                .attr("height", 
+                    function(d){
+                        return d;
+                    });
+
+        x.exit().remove();
+        x.attr("x",
+                    function(d, i){
+                        return (i*16);
+                    })
+                .attr("y", 0)
+                .attr("width", 15)
+                .attr("height", 
+                    function(d){
+                        return d;
+                    });
+        }
+
+		function randomArrayOfNumbers() {
+			var dataset = [];
+			for (i = 0; i < roundNumber(); i++) { 
+		    	dataset[i] = roundNumber();
+			}
+		console.log(dataset)
+		return dataset
+		}
+
+		function roundNumber(){
+			return Math.round((Math.random())*200)
+		}
+
+	</script>
+</body>
+</html>
