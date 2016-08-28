@@ -27,7 +27,7 @@ function scatterplot(column1, column2) {
                     	return "#A0522D";
                     else 
                     	return "#FFD700";
-                });	        
+                });	       
 }
 
 /*var mysvg = document.getElementById("mysvg");
@@ -35,9 +35,6 @@ var axys = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
 axys.setAttribute("points", "0 500 0 0 500 0");
 axys.setAttribute("stroke", "#8B4513");
 mysvg.appendChild(axys);*/
-
-scatterplot("Petal.Width", "Petal.Length")
-
 
 function getData(iris, charac){
 	var dataset=[];
