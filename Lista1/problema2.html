@@ -6,8 +6,8 @@
 </head>
 
 <body>
-	<svg width="500" height="500" id="mysvg"> 
-	<g transform="scale(1,-0.5)" translate="(0,-500)">
+	<svg width="500" height="550" id="mysvg"> 
+	<g transform="scale(1,-0.5)" translate="(0,-550)">
 	</g>
 	</svg>
 	<script>
@@ -34,7 +34,7 @@
 		detailCircle.setAttribute("r", "8");
 		detailCircle.setAttribute("cx", "200");
 		detailCircle.setAttribute("cy", "100");
-		detailCircle.setAttribute("fill", "white");
+		detailCircle.setAttribute("fill", "#FAFAD2");
 		svg.appendChild(detailCircle);
 
 	// Base da espada
@@ -45,13 +45,20 @@
 		circle2.setAttribute("fill", "#E6BE8A");
 		svg.appendChild(circle2);
 
-		var baseDetail = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		baseDetail.setAttribute("x", "130");
-		baseDetail.setAttribute("y", "200");
-		baseDetail.setAttribute("height", "1");
-		baseDetail.setAttribute("width", "1");
+		var rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+		rect1.setAttribute("x", "130");
+		rect1.setAttribute("y", "200");
+		rect1.setAttribute("height", "15");
+		rect1.setAttribute("width", "140");
+		rect1.setAttribute("fill", "#E6BE8A");
+		svg.appendChild(rect1);
+
+		var svg = document.getElementById("mysvg");
+		var baseDetail = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+		baseDetail.setAttribute("points", "125 200, 130 195, 135 200, 130 205");
 		baseDetail.setAttribute("fill", "#FAFAD2");
 		svg.appendChild(baseDetail);
+		
 
 		var circle3 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 		circle3.setAttribute("r", "15");
@@ -60,21 +67,11 @@
 		circle3.setAttribute("fill", "#E6BE8A");
 		svg.appendChild(circle3);
 
-		var baseDetail = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		baseDetail.setAttribute("x", "130");
-		baseDetail.setAttribute("y", "200");
-		baseDetail.setAttribute("height", "1");
-		baseDetail.setAttribute("width", "1");
+		var svg = document.getElementById("mysvg");
+		var baseDetail = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+		baseDetail.setAttribute("points", "265 200, 270 195, 275 200, 270 205");
 		baseDetail.setAttribute("fill", "#FAFAD2");
 		svg.appendChild(baseDetail);
-
-		var rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		rect1.setAttribute("x", "130");
-		rect1.setAttribute("y", "200");
-		rect1.setAttribute("height", "15");
-		rect1.setAttribute("width", "140");
-		rect1.setAttribute("fill", "#E6BE8A");
-		svg.appendChild(rect1);
 
 	// Lâmina da espada
 		var rect1 = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -86,19 +83,16 @@
 		svg.appendChild(rect1);
 
 	// Ponta da espada
-		var triangle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-		triangle.setAttribute("x", "180");
-		triangle.setAttribute("y", "480");
-		triangle.setAttribute("height", "20");
-		triangle.setAttribute("width", "40");
-		triangle.setAttribute("rotate", "90º")
+		var svg = document.getElementById("mysvg");
+		var triangle = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+		triangle.setAttribute("points", "220 495, 200 530, 180 495");
 		triangle.setAttribute("fill", "#EEE8AA");
 		svg.appendChild(triangle);
 
 	// Detalhe da lâmina
 		var line = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 		line.setAttribute("x", "200");
-		line.setAttribute("y", "215");
+		line.setAttribute("y", "230");
 		line.setAttribute("height", "300");
 		line.setAttribute("width", "1");
 		line.setAttribute("fill", "#FAFAD2");
