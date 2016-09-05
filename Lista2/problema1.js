@@ -37,7 +37,7 @@ function drawArcs(angles){
 			" z";
 	
 		console.log(d);
-		d3.select("g").append("path")
+		d3.select("svg").append("path")
 					  .attr("d", d)
 					  .attr("fill", colors[i])
 
@@ -47,7 +47,6 @@ function drawArcs(angles){
 		arc.setAttribute("fill", colors[i]);
 		svg.append(arc);*/
 	}
-	return arcs
 }
 
 function pieChart(probabilities,colors){

@@ -1,0 +1,11 @@
+O que você aprendeu a partir dessa visualização? (provavelmente não muito). 
+Nada! Achei que fosse ser realmente interessante.
+
+Por que isso ocorreu? 
+Muitos dados próximos e sem nenhuma análise/categorização em cima pra ser printado apenas um scatterplot, com uma única cor.
+
+O que você faria para modificar isso?
+Primeiramente tentaria encontrar algum padrão. (São muitos dados e nenhum contexto pra tentar isso)
+Reduzir o tamanho do raio dos pontos. (Essa foi boa)
+
+ Sugira possíveis soluções para o problema e tente implementá-las.
