@@ -1,6 +1,6 @@
 var svg = document.getElementById("mysvg");
 var probabilities = [25, 50, 10, 15];
-var colors = ["#FAFAD2", "E6BE8A", "#A0522D", "CD853F"];
+var colors = ["#FAFAD2", "#E6BE8A", "#A0522D", "#CD853F"];
 var moveTo = 400;
 var radius = 200;
 
@@ -37,7 +37,7 @@ function drawArcs(angles){
 			" z";
 	
 		console.log(d);
-		d3.select("svg").append("path")
+		var x = d3.select("svg").append("path")
 					  .attr("d", d)
 					  .attr("fill", colors[i])
 
