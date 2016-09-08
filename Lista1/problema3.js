@@ -57,11 +57,11 @@ function getMaximum(iris, charac){
 
 function getMinimum(iris, charac){
 	dataset = getData(iris, charac);
-	maximum = dataset.reduce(function(a, b) {
-	  if(a < b)
+	minimum = dataset.reduce(function(a, b) {
+	  if(a > b)
 	    return a;
 	  else 
 	    return b;
 	})
-	return maximum;
+	return minimum;
 }
