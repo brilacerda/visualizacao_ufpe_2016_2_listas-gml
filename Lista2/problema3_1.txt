@@ -4,8 +4,9 @@ Nada! Achei que fosse ser realmente interessante.
 Por que isso ocorreu? 
 Muitos dados próximos e sem nenhuma análise/categorização em cima pra ser printado apenas um scatterplot, com uma única cor.
 
-O que você faria para modificar isso?
+O que você faria para modificar isso? Sugira possíveis soluções para o problema e tente implementá-las.
 Primeiramente tentaria encontrar algum padrão. (São muitos dados e nenhum contexto pra tentar isso)
 Reduzir o tamanho do raio dos pontos. (Essa foi boa)
+Como visto em sala poderíamos também criar um mapa de calor.
 
- Sugira possíveis soluções para o problema e tente implementá-las.
+ 
