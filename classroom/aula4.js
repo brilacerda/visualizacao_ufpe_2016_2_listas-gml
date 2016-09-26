@@ -208,13 +208,6 @@ function init(){
         d3.event.preventDefault();
 
     })
-    .on("mouseup",function(d){  
-        state = "idle";
-        renderDataset();
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
-
-    })
 
 
 

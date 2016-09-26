@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3: Scaling the AlbersUSA projection</title>
+		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+		<style type="text/css">
+			/* No style rules here yet */		
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			var xOffset = 0;
+			var yOffset = 0;
+			var initialMousePosition  = [0,0] 
+			var state = "idle";
+
+			//Width and height
+			var w = 900;
+			var h = 500;
+
+			//Create SVG element
+			var svg = d3.select("body")
+			.append("svg")
+			.attr("width", w)
+			.attr("height", h);
+
+			//Define path generator
+			var projection = d3.geoMercator()
+			.translate([w/2+xOffset, h/2+yOffset])
+			.center([-34.87986, -8.05596])
+			.scale([100000]);
+
+			//Define path generator
+			var path = d3.geoPath().projection(projection);
+
+			d3.json("recifesMap.json", function(json) {
+			paths = svg.selectAll("path")
+			   .data(json.features);
+			
+			//Load in GeoJSON data
+
+				//Bind data and create one path per GeoJSON feature
+				paths
+			   .data(json.features)
+			   .enter()
+			   .append("path")
+			   .attr("d", path)
+			});
+
+		d3.select("svg")
+		.on("mousedown",function(d){	    
+			    var p = d3.mouse( this);
+			    initialMousePosition = p;
+			    state = "pan";
+			    d3.event.stopPropagation();
+				d3.event.preventDefault();
+			})
+			.on("mousemove",function(d){
+			    if(state === "pan"){
+			    var p = d3.mouse( this),
+		            move = {
+		                x : p[0] - initialMousePosition[0],
+		                y : p[1] - initialMousePosition[1]
+		            };
+				xOffset -= (move.x);
+				yOffset += (move.y);
+			    initialMousePosition = p;    
+				renderDataset();
+				console.log(xOffset, yOffset)
+				d3.event.stopPropagation();
+				d3.event.preventDefault();
+			    }})
+			.on("mouseup",function(d){	
+			    state = "idle";
+			    renderDataset();
+			    d3.event.stopPropagation();
+				d3.event.preventDefault();
+				})
+
+	function renderDataset(){
+		//Define path generator
+		var projection = d3.geoMercator()
+		.translate([w/2+xOffset, h/2+yOffset])
+		.center([-34.87986, -8.05596])
+		.scale([100000]);
+
+		//Define path generator
+		var path = d3.geoPath().projection(projection);
+
+	    //Remove paths that are not needed
+	    paths
+		.exit()
+		.remove();		
+
+	    // Update paths
+	    paths
+		.attr("d", path);
+	}
+
+		</script>
+	</body>
+</html>
