@@ -20,6 +20,7 @@
 			var yOffset = 0;
 			var initialMousePosition  = [0,0] 
 			var state = "idle";
+			var scaleFactor = 1.0;
 
 		// =============== Map insertion ===============	
 
@@ -27,7 +28,7 @@
 			var projection = d3.geoMercator()
 			.translate([(w/2)-xOffset, (h/2)+yOffset])
 			.center([-34.87986, -8.05596])
-			.scale([100000]);
+			.scale([100000*scaleFactor]);
 
 			//Create SVG element
 			var svg = d3.select("body")
@@ -86,7 +87,7 @@
 			.attr('r', 1)
 		});
 
-		// =============== Pan insertion ===============		
+		// =============== Pan & Zoom insertion ===============		
 
 			d3.select("g")
 			.on("mousedown",function(d){	    
@@ -116,15 +117,25 @@
 				    renderDataset();
 				    d3.event.stopPropagation();
 					d3.event.preventDefault();
-				});
+				})
+				.on("wheel.zoom",function(d){
+			        if (d3.event.wheelDeltaY <= 0)
+			        	scaleFactor *= 1.1;
+			        else
+				        scaleFactor *= 0.9;
+				    console.log(scaleFactor)
+				    renderDataset();
+				    d3.event.stopPropagation();
+			        d3.event.preventDefault();  
+			    });
 
 			// =============== Update paths and circles ===============	
 			function renderDataset(){	
 
 				var projection = d3.geoMercator()
-				.translate([w/2+xOffset, h/2+ yOffset])
+				.translate([w/2-xOffset, h/2+ yOffset])
 				.center([-34.87986,-8.05596])
-				.scale(100000);
+				.scale(100000*scaleFactor);
 
 				path = d3.geoPath()
 				.projection(projection)
