@@ -14,6 +14,8 @@
 			//Width and height
 			var w = 900;
 			var h = 500;
+			var recifes_map_array = [];
+			var recifes_accident_coord_array = []
 
 			//Define path generator
 			var projection = d3.geoMercator()
@@ -25,28 +27,61 @@
 			var svg = d3.select("body")
 						.append("svg")
 						.attr("width", w)
-						.attr("height", h)
+						.attr("height", h);
+
+			var g  = d3.select("svg")
+						.append("g");
 
 			//Define path generator
 			var path = d3.geoPath()
 				.projection(projection);
-			
+
 			d3.json("recifesMap.json", function(json) {
-				paths = svg.selectAll("path")
-					.data(json.features);
+				for (elem in json.features) {
+			   		recifes_map_array.push(json.features[elem]);
+			    }
+ 
+				paths = g.selectAll("path")
+					.data(recifes_map_array);
 			
 				//Bind data and create one path per GeoJSON feature
-				svg.selectAll("path")
-				   .data(json.features)
-				   .enter()
-				   .append("path")
-				   .attr("d", path)
+				g.selectAll("path")
+					.data(recifes_map_array)
+					.enter()
+					.append("path")
+					.attr("d", path)
 		});
 
-			//Load in GeoJSON data
-			d3.json("geo.json", function(json) {
-				
-				
+		// =============== Accidents insertion ===============		
+
+		//Define circle generator
+		var circle = d3.geoPath().projection(projection);
+
+		d3.json("november2014Accidents.json", function(json) {
+			for (elem in json.features) {
+				recifes_accident_coord_array.push(json.features[elem]);
+		    }
+
+			circleSelection = g.selectAll("circle")
+				.data(recifes_accident_coord_array);
+	    
+		    //Create circles
+		    circleSelection
+			.enter()
+			.append("circle")
+			.attr("fill", '#CD853F')
+			.attr("cx", function(accident) {
+			    return projection([accident.properties.longitude, accident.properties.latitude])[0];
+			})
+			.attr("cy", function(accident) {
+		        return projection([accident.properties.longitude, accident.properties.latitude])[1];
+			})
+			.attr('r', 1)
+
+			//Remove circles that are not needed
+		    circleSelection
+			.exit()
+			.remove();
 			});
 		</script>
 	</body>
