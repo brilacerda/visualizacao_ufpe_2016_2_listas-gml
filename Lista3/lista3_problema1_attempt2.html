@@ -15,11 +15,17 @@
 			var w = 900;
 			var h = 500;
 			var recifes_map_array = [];
-			var recifes_accident_coord_array = []
+			var recifes_accident_array = []
+			var xOffset = 0;
+			var yOffset = 0;
+			var initialMousePosition  = [0,0] 
+			var state = "idle";
+
+		// =============== Map insertion ===============	
 
 			//Define path generator
 			var projection = d3.geoMercator()
-			.translate([w/2, h/2])
+			.translate([(w/2)-xOffset, (h/2)+yOffset])
 			.center([-34.87986, -8.05596])
 			.scale([100000]);
 
@@ -50,6 +56,7 @@
 					.enter()
 					.append("path")
 					.attr("d", path)
+					.attr("fill", "#2a1c0e")
 		});
 
 		// =============== Accidents insertion ===============		
@@ -59,11 +66,11 @@
 
 		d3.json("november2014Accidents.json", function(json) {
 			for (elem in json.features) {
-				recifes_accident_coord_array.push(json.features[elem]);
+				recifes_accident_array.push(json.features[elem]);
 		    }
 
 			circleSelection = g.selectAll("circle")
-				.data(recifes_accident_coord_array);
+				.data(recifes_accident_array);
 	    
 		    //Create circles
 		    circleSelection
@@ -77,12 +84,80 @@
 		        return projection([accident.properties.longitude, accident.properties.latitude])[1];
 			})
 			.attr('r', 1)
+		});
 
-			//Remove circles that are not needed
-		    circleSelection
-			.exit()
-			.remove();
-			});
+		// =============== Pan insertion ===============		
+
+			d3.select("g")
+			.on("mousedown",function(d){	    
+				    var p = d3.mouse( this);
+				    initialMousePosition = p;
+				    console.log(p)
+				    state = "pan";
+				    d3.event.stopPropagation();
+					d3.event.preventDefault();
+				})
+				.on("mousemove",function(d){
+				    if(state === "pan"){
+				    var p = d3.mouse( this),
+			            move = {
+			                x : p[0] - initialMousePosition[0],
+			                y : p[1] - initialMousePosition[1]
+			            };
+					xOffset -= (move.x);
+					yOffset += (move.y);
+				    initialMousePosition = p;    
+					renderDataset();
+					d3.event.stopPropagation();
+					d3.event.preventDefault();
+				    }})
+				.on("mouseup",function(d){	
+				    state = "idle";
+				    renderDataset();
+				    d3.event.stopPropagation();
+					d3.event.preventDefault();
+				});
+
+			// =============== Update paths and circles ===============	
+			function renderDataset(){	
+
+				var projection = d3.geoMercator()
+				.translate([w/2+xOffset, h/2+ yOffset])
+				.center([-34.87986,-8.05596])
+				.scale(100000);
+
+				path = d3.geoPath()
+				.projection(projection)
+
+				//Remove circles that are not needed
+			    g.selectAll("path")
+				.data(recifes_map_array)
+				.exit()
+				.remove();
+
+				// Updates paths
+				g.selectAll("path")
+				.data(recifes_map_array)
+				.attr("d", path)
+
+				//Remove circles that are not needed
+			    g.selectAll("circle")
+				.data(recifes_accident_array)
+				.exit()
+				.remove();
+
+				// Updates circles
+				g.selectAll("circle")
+				.data(recifes_accident_array)
+				.attr("fill", '#CD853F')
+				.attr("cx", function(accident) {
+				    return projection([accident.properties.longitude, accident.properties.latitude])[0];
+				})
+				.attr("cy", function(accident) {
+			        return projection([accident.properties.longitude, accident.properties.latitude])[1];
+				})
+				.attr('r', 1)
+			}
 		</script>
 	</body>
 </html>
