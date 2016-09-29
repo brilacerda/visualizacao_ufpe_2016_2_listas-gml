@@ -19,12 +19,24 @@
 			var h = 500;
 			var recifes_map_array = [];
 			var recifes_accident_array = []
+			var circlesX = []
+			var circlesY = []
+			var type = []
 			var xOffset = 0;
 			var yOffset = 0;
 			var initialMousePosition  = [0,0] 
 			var state = "idle";
 			var scaleFactor = 1.0;
 			var colors = false
+			var cyclemotors = 0
+			var automobiles = 0
+			var bicycleandpeople = 0
+			var rectangle = {
+		                x       : 0,
+		                y       : 0,
+		                width   : 0,
+		                height  : 0
+		            }
 
 		// =============== Map insertion ===============	
 
@@ -57,8 +69,7 @@
 					.data(recifes_map_array);
 			
 				//Bind data and create one path per GeoJSON feature
-				g.selectAll("path")
-					.data(recifes_map_array)
+				paths
 					.enter()
 					.append("path")
 					.attr("d", path)
@@ -75,11 +86,11 @@
 				recifes_accident_array.push(json.features[elem]);
 		    }
 
-			circleSelection = g.selectAll("circle")
+			circles = g.selectAll("circle")
 				.data(recifes_accident_array);
 	    
 		    //Create circles
-		    circleSelection
+		    circles
 			.enter()
 			.append("circle")
 			.attr("fill", '#CD853F')
@@ -90,6 +101,10 @@
 		        return projection([accident.properties.longitude, accident.properties.latitude])[1];
 			})
 			.attr('r', 1)
+
+			for (i in recifes_accident_array){
+				type.push(recifes_accident_array[i].properties.tipo);
+			}	
 		});
 
 		// =============== Pan & Zoom insertion ===============		
@@ -179,14 +194,18 @@
 			        .attr("x", d.x)
 			        .attr("y", d.y)
 			        .attr("width", d.width)
-			        .attr("height", d.height)
+			        .attr("height", d.height);
+			        rectangle = d;
 				} 
 			}
 		})
-		.on("mouseup",function(d){	
+		.on("mouseup",function(d){
 		    state = "idle";
-		    svg.select( "rect").remove();
+		    svg.select("rect").remove();
 		    renderDataset();
+			
+	    	accidentsSelected()
+
 		    d3.event.stopPropagation();
 			d3.event.preventDefault();
 		})
@@ -222,21 +241,30 @@
 				.data(recifes_map_array)
 				.attr("d", path)
 
-				//Remove circles that are not needed
-			    g.selectAll("circle")
+
+				circles = g.selectAll("circle")
 				.data(recifes_accident_array)
+
+				//Remove circles that are not needed
+			    circles
 				.exit()
 				.remove();
 
+				circlesX = []
+				circlesY = []
+
 				// Updates circles
-				g.selectAll("circle")
-				.data(recifes_accident_array)
+				circles
 				.attr("fill", '#CD853F')
 				.attr("cx", function(accident) {
-				    return projection([accident.properties.longitude, accident.properties.latitude])[0];
+				    x = projection([accident.properties.longitude, accident.properties.latitude])[0]
+				    circlesX.push(x)
+				    return x;
 				})
 				.attr("cy", function(accident) {
-			        return projection([accident.properties.longitude, accident.properties.latitude])[1];
+			        y = projection([accident.properties.longitude, accident.properties.latitude])[1];
+			        circlesY.push(y);
+			        return y;
 				})
 				.attr('r', 1*scaleFactor)
 
@@ -255,6 +283,35 @@
 			                	return "#ffffff";
 					})
 				}
+			}
+
+			function accidentsSelected(){
+				cyclemotors = 0;
+				bicycleandpeople = 0;
+				automobiles = 0
+
+				rect_x_min = rectangle.x;
+		    	rect_x_max = rectangle.x + rectangle.width;
+		    	rect_y_min = rectangle.y;
+		    	rect_y_max = rectangle.y + rectangle.height;
+
+				for (i = 0; i < circlesX.length; i++) {
+					if (circlesX[i] >= rect_x_min &&
+					    circlesX[i] <= rect_x_max &&
+					    circlesY[i] >= rect_y_min &&
+					    circlesY[i] <= rect_y_max ){
+					      	if(type[i] == "Moto e Ciclomotor")
+			                	cyclemotors += 1;
+			                else if (type[i] == "Ciclistas e pedestre")
+			                	bicycleandpeople += 1;
+			                else if (type[i] == "Automóveis e outros")
+			                	return automobiles +=1;
+				    }
+				}
+
+				// Em alguns momentos o valor não é impresso, mas se essa linha for executadano console obtemos o resultado.
+
+				console.log("Automóveis e outros: ", automobiles, "\nCiclistas e pedestre: ", bicycleandpeople, "\nMoto e Ciclomotor", cyclemotors)
 			}
 		</script>
 	</body>
