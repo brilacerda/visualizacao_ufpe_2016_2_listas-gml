@@ -4,9 +4,6 @@
 		<meta charset="utf-8">
 		<title>D3: Scaling the AlbersUSA projection</title>
 		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
-		<style type="text/css">
-			/* No style rules here yet */		
-		</style>
 	</head>
 	<body>
 		<script type="text/javascript">
@@ -14,10 +11,17 @@
 			var yOffset = 0;
 			var initialMousePosition  = [0,0] 
 			var state = "idle";
+			var recifes_map_array = []
 
 			//Width and height
 			var w = 900;
 			var h = 500;
+
+			//Define path generator
+			var projection = d3.geoMercator()
+			.translate([w/2-xOffset, h/2+yOffset])
+			.center([-34.87986, -8.05596])
+			.scale([100000]);
 
 			//Create SVG element
 			var svg = d3.select("body")
@@ -26,76 +30,146 @@
 			.attr("height", h);
 
 			//Define path generator
-			var projection = d3.geoMercator()
-			.translate([w/2+xOffset, h/2+yOffset])
-			.center([-34.87986, -8.05596])
-			.scale([100000]);
-
-			//Define path generator
-			var path = d3.geoPath().projection(projection);
+			var path = d3.geoPath()
+				.projection(projection);
 
 			d3.json("recifesMap.json", function(json) {
-			paths = svg.selectAll("path")
-			   .data(json.features);
+				for (elem in json.features) {
+			   		recifes_map_array.push(json.features[elem]);
+			    }
+ 
+				paths = svg.selectAll("path")
+					.data(recifes_map_array);
 			
-			//Load in GeoJSON data
-
 				//Bind data and create one path per GeoJSON feature
-				paths
-			   .data(json.features)
-			   .enter()
-			   .append("path")
-			   .attr("d", path)
-			});
+				svg.selectAll("path")
+					.data(recifes_map_array)
+					.enter()
+					.append("path")
+					.attr("d", path)
+					.attr("fill", "#2a1c0e")
+		});
 
-		d3.select("svg")
-		.on("mousedown",function(d){	    
+			d3.select("svg")
+			.on("contextmenu", function() {
+				state = "select"
+				d3.event.stopPropagation();
+	    		d3.event.preventDefault();
+			})
+			.on("mousedown",function(eventData){	    
 			    var p = d3.mouse( this);
 			    initialMousePosition = p;
-			    state = "pan";
+			    // console.log("mousedown - state: ", state)
+			    if (d3.event.which === 3) {
+			    	state = "select"
+			    	console.log("right click - state: ", state)
+					svg.append( "rect")
+				        .attr("rx", 6)
+				        .attr("ry", 6)
+				        .attr("x", p[0])
+				        .attr("y", p[1])
+				        .attr("width", 0)
+				        .attr("height", 0)
+				        .attr("stroke", 'gray')
+				        .attr("fill", 'transparent')
+				        .attr('stroke-width', '1px')
+				        .attr('stroke-dasharray', '4px')
+				        .attr('stroke-opacity', '0.5')
+
+			    } else {
+			    	state = "pan";
+			    	console.log("left click - state: ", state)
+			    }
 			    d3.event.stopPropagation();
 				d3.event.preventDefault();
 			})
 			.on("mousemove",function(d){
+				console.log("mousemove - state: ", state)
+
 			    if(state === "pan"){
-			    var p = d3.mouse( this),
+			    	// console.log("mousemove - state: ", state)
+			    	var p = d3.mouse( this),
 		            move = {
 		                x : p[0] - initialMousePosition[0],
 		                y : p[1] - initialMousePosition[1]
 		            };
-				xOffset -= (move.x);
-				yOffset += (move.y);
-			    initialMousePosition = p;    
-				renderDataset();
-				console.log(xOffset, yOffset)
-				d3.event.stopPropagation();
-				d3.event.preventDefault();
-			    }})
+					xOffset -= (move.x);
+					yOffset += (move.y);
+				    initialMousePosition = p;    
+					renderDataset();
+					d3.event.stopPropagation();
+					d3.event.preventDefault();
+			    }
+
+				if(state === "select"){
+					var s = svg.select( "rect");
+					// console.log("mousemove - state: ", state)
+					console.log("S is empty?", s.empty())
+				    if( !s.empty()) {
+				        var p = d3.mouse( this),
+			            d = {
+			                x       : parseInt( s.attr( "x"), 10),
+			                y       : parseInt( s.attr( "y"), 10),
+			                width   : parseInt( s.attr( "width"), 10),
+			                height  : parseInt( s.attr( "height"), 10)
+			            },
+			            move = {
+			                x : p[0] - d.x,
+			                y : p[1] - d.y
+			            };
+
+				        if( move.x < 1 || (move.x*2<d.width)) {
+				            d.x = p[0];
+				            d.width -= move.x;
+				        } else {
+				            d.width = move.x;       
+				        }
+
+				        if( move.y < 1 || (move.y*2<d.height)) {
+				            d.y = p[1];
+				            d.height -= move.y;
+				        } else {
+				            d.height = move.y;       
+				        }
+				       
+				       	console.log("x", d.x , "y", d.y , "width", d.width , "height", d.height)
+				        s
+				        .attr("x", d.x)
+				        .attr("y", d.y)
+				        .attr("width", d.width)
+				        .attr("height", d.height)
+					} 
+				}
+			})
 			.on("mouseup",function(d){	
 			    state = "idle";
+			    svg.select( "rect").remove();
 			    renderDataset();
 			    d3.event.stopPropagation();
 				d3.event.preventDefault();
-				})
+			});
+
+			
 
 	function renderDataset(){
-		//Define path generator
 		var projection = d3.geoMercator()
-		.translate([w/2+xOffset, h/2+yOffset])
-		.center([-34.87986, -8.05596])
-		.scale([100000]);
+		.translate([w/2-xOffset, h/2+ yOffset])
+		.center([-34.87986,-8.05596])
+		.scale(100000);
 
-		//Define path generator
-		var path = d3.geoPath().projection(projection);
+		path = d3.geoPath()
+		.projection(projection)
 
-	    //Remove paths that are not needed
-	    paths
+		//Remove paths that are not needed
+	    svg.selectAll("path")
+		.data(recifes_map_array)
 		.exit()
-		.remove();		
+		.remove();
 
-	    // Update paths
-	    paths
-		.attr("d", path);
+		// Updates paths
+		svg.selectAll("path")
+		.data(recifes_map_array)
+		.attr("d", path)    
 	}
 
 		</script>
