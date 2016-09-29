@@ -82,8 +82,8 @@
 		var circle = d3.geoPath().projection(projection);
 
 		d3.json("november2014Accidents.json", function(json) {
-			for (elem in json.features) {
-				recifes_accident_array.push(json.features[elem]);
+			for (i in json.features) {
+				recifes_accident_array.push(json.features[i]);
 		    }
 
 			circles = g.selectAll("circle")
@@ -102,8 +102,8 @@
 			})
 			.attr('r', 1)
 
-			for (i in recifes_accident_array){
-				type.push(recifes_accident_array[i].properties.tipo);
+			for (j in recifes_accident_array){
+				type.push(recifes_accident_array[j].properties.tipo);
 			}	
 		});
 
@@ -146,8 +146,8 @@
 			d3.event.preventDefault();
 		})
 		.on("mousemove",function(d){
+			console.log("mousemove - state: ", state)
 		    if(state === "pan"){
-		    	// console.log("mousemove - state: ", state)
 		    	var p = d3.mouse( this),
 	            move = {
 	                x : p[0] - initialMousePosition[0],
@@ -157,8 +157,6 @@
 				yOffset += (move.y);
 			    initialMousePosition = p;    
 				renderDataset();
-				d3.event.stopPropagation();
-				d3.event.preventDefault();
 		    }
 
 			if(state === "select"){
@@ -198,14 +196,16 @@
 			        rectangle = d;
 				} 
 			}
+			d3.event.stopPropagation();
+			d3.event.preventDefault();
 		})
 		.on("mouseup",function(d){
-		    state = "idle";
-		    svg.select("rect").remove();
-		    renderDataset();
-			
-	    	accidentsSelected()
-
+			renderDataset();
+			if (state === "select"){
+			    svg.select("rect").remove();				
+			    accidentsSelected();
+			}
+			state = "idle";		
 		    d3.event.stopPropagation();
 			d3.event.preventDefault();
 		})
@@ -272,12 +272,12 @@
 					g.selectAll("circle")
 					.attr("fill",
                 		function(d){
-			            	type = d.properties.tipo
-			            	if(type == "Moto e Ciclomotor")
+			            	tipo = d.properties.tipo
+			            	if(tipo == "Moto e Ciclomotor")
 			                	return "#feb24c";
-			                else if (type == "Ciclistas e pedestre")
+			                else if (tipo == "Ciclistas e pedestre")
 			                	return "#f03b20";
-			                else if (type == "Automóveis e outros")
+			                else if (tipo == "Automóveis e outros")
 			                	return "#ffeda0";
 			                else 
 			                	return "#ffffff";
@@ -288,7 +288,7 @@
 			function accidentsSelected(){
 				cyclemotors = 0;
 				bicycleandpeople = 0;
-				automobiles = 0
+				automobiles = 0;
 
 				rect_x_min = rectangle.x;
 		    	rect_x_max = rectangle.x + rectangle.width;
