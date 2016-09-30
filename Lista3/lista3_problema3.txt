@@ -1,0 +1,8 @@
+Eu escolheria um plot de 4 linhas de cores diferentes num gráfico de linhas.
+Eixo y sendo os valores & o Eixo x sendo os meses.
+
+as três linhas mais abaixo simbolizariam os tipos de acidente e a mais acima simbolizaria o total.
+
+Pensei tambem em a linha do total ser um gráfico de barra por trás das linhas, porém acho poluído e não fluido - pra não dizer feio.
+
+Eu escolhi este gráfico por ele conseguir mostrar o andamento dos números de acordo com os meses, demostrando sempre o histórico e podendo também fazer um comparativo com o as demais linhas, ou tipos de acidentes. Podendo também recorrer a selecionar os tipos de acidentes que se quer ver e assim reduzindo a opacidade dos demais para enfatizar este.

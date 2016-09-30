@@ -5,7 +5,9 @@
 		<title>D3: Scaling the Recifes projection</title>
 		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
 		<style type="text/css">
-			/* No style rules here yet */		
+			    body {
+			      font: 16px sans-serif;
+			    }	
 		</style>
 	</head>
 	<body>
@@ -28,9 +30,9 @@
 			var state = "idle";
 			var scaleFactor = 1.0;
 			var colors = false
-			var cyclemotors = 0
-			var automobiles = 0
-			var bicycleandpeople = 0
+			var cyclemotors = 131;
+			var automobiles = 25;
+			var bicycleandpeople = 47;
 			var rectangle = {
 		                x       : 0,
 		                y       : 0,
@@ -38,7 +40,7 @@
 		                height  : 0
 		            }
 
-		// =============== Map insertion ===============	
+// =============== Environment insertion ===============	
 
 			//Define path generator
 			var projection = d3.geoMercator()
@@ -46,15 +48,27 @@
 			.center([-34.87986, -8.05596])
 			.scale([100000*scaleFactor]);
 
+			var margin = {top: 10, right: 30, bottom: 30, left: 30};
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
-						.attr("width", w)
-						.attr("height", h);
+						.attr("width", w + margin.left + margin.right)
+						.attr("height", h + margin.top + margin.bottom)
+			
+			var g = d3.select("svg")
+						.append("g")
 
+			var svg2 = d3.select("body")
+						.append("svg")
+						.attr("width", 200)
+						.attr("height", 200)
 
-			var g  = d3.select("svg")
-						.append("g");
+			var graph = svg2
+						.append("g")
+						.attr("transform", "translate(0, 200) scale(1, -1)")
+						.attr("float", "left")
+
+		// =============== Map insertion ===============	
 
 			//Define path generator
 			var path = d3.geoPath()
@@ -73,7 +87,7 @@
 					.enter()
 					.append("path")
 					.attr("d", path)
-					.attr("fill", "#2a1c0e")
+					.attr("fill", "#cec9b3")
 		});
 
 		// =============== Accidents insertion ===============		
@@ -93,12 +107,16 @@
 		    circles
 			.enter()
 			.append("circle")
-			.attr("fill", '#CD853F')
+			.attr("fill", '#ef3b2c')
 			.attr("cx", function(accident) {
-			    return projection([accident.properties.longitude, accident.properties.latitude])[0];
+			    x = projection([accident.properties.longitude, accident.properties.latitude])[0]
+			    circlesX.push(x)
+			    return x;
 			})
 			.attr("cy", function(accident) {
-		        return projection([accident.properties.longitude, accident.properties.latitude])[1];
+		        y = projection([accident.properties.longitude, accident.properties.latitude])[1];
+		        circlesY.push(y);
+		        return y;
 			})
 			.attr('r', 1)
 
@@ -106,6 +124,10 @@
 				type.push(recifes_accident_array[j].properties.tipo);
 			}	
 		});
+
+		// =============== Graph insertion ===============		
+		
+		newGraph()
 
 		// =============== Pan & Zoom insertion ===============		
 		d3.select("input")
@@ -146,7 +168,6 @@
 			d3.event.preventDefault();
 		})
 		.on("mousemove",function(d){
-			console.log("mousemove - state: ", state)
 		    if(state === "pan"){
 		    	var p = d3.mouse( this),
 	            move = {
@@ -255,7 +276,6 @@
 
 				// Updates circles
 				circles
-				.attr("fill", '#CD853F')
 				.attr("cx", function(accident) {
 				    x = projection([accident.properties.longitude, accident.properties.latitude])[0]
 				    circlesX.push(x)
@@ -274,13 +294,13 @@
                 		function(d){
 			            	tipo = d.properties.tipo
 			            	if(tipo == "Moto e Ciclomotor")
-			                	return "#feb24c";
+			                	return "#e31a1c";
 			                else if (tipo == "Ciclistas e pedestre")
-			                	return "#f03b20";
+			                	return "#fd8d3c";
 			                else if (tipo == "Automóveis e outros")
-			                	return "#ffeda0";
+			                	return "#fed976";
 			                else 
-			                	return "#ffffff";
+			                	return "gray";
 					})
 				}
 			}
@@ -295,7 +315,7 @@
 		    	rect_y_min = rectangle.y;
 		    	rect_y_max = rectangle.y + rectangle.height;
 
-				for (i = 0; i < circlesX.length; i++) {
+				for (var i = 0; i < circlesX.length; i++) {
 					if (circlesX[i] >= rect_x_min &&
 					    circlesX[i] <= rect_x_max &&
 					    circlesY[i] >= rect_y_min &&
@@ -305,14 +325,69 @@
 			                else if (type[i] == "Ciclistas e pedestre")
 			                	bicycleandpeople += 1;
 			                else if (type[i] == "Automóveis e outros")
-			                	return automobiles +=1;
+			                	automobiles +=1;
 				    }
 				}
-
-				// Em alguns momentos o valor não é impresso, mas se essa linha for executadano console obtemos o resultado.
-
 				console.log("Automóveis e outros: ", automobiles, "\nCiclistas e pedestre: ", bicycleandpeople, "\nMoto e Ciclomotor", cyclemotors)
+
+				newGraph()
 			}
+
+			function newGraph() {
+				dataset = [[automobiles, "Automóveis e outros"], [bicycleandpeople, "Ciclistas e pedestre"], [cyclemotors, "Moto e Ciclomotor"]];
+
+				var margin = {top: 10, right: 30, bottom: 30, left: 30},
+				width = 300 - margin.left - margin.right,
+				height = 600 - margin.top - margin.bottom;
+
+
+				var x = graph.selectAll("rect").data(dataset);
+
+				x.enter().append("rect")
+						.attr("x",
+		                    function(d, i){
+		                        return (i*61);
+		                    })
+		                .attr("y", 30)
+		                .attr("width", 60)
+		                .attr("height", 
+		                    function(d){
+		                        return d[0]*3;
+		                    })
+                        .attr("fill",
+	            			function(d){
+				            	if(d[1] == "Moto e Ciclomotor")
+				                	return "#e31a1c";
+				                else if (d[1] == "Ciclistas e pedestre")
+				                	return "#fd8d3c";
+				                else if (d[1] == "Automóveis e outros")
+				                	return "#fed976";
+				                else 
+				                	return "gray";
+						});
+
+
+				// svg2.selectAll("text")
+				// 	.data(dataset)
+				// 	.append("text")
+				//     .attr("y", 10)
+				//     .attr("x", function(d, i) { return i*32})
+				//     .attr("text-anchor", "middle")
+				//     .attr("fill", "gray")
+				//     .attr("font-size", "12")
+				//     .text("text", function(d){
+				//     	return d[0]
+				//     });
+
+		        x.exit().remove();
+
+		        x
+                .attr("width", 60)
+                .attr("height", 
+                    function(d){
+                        return d[0]*3;
+                    })
+	        }
 		</script>
 	</body>
 </html>

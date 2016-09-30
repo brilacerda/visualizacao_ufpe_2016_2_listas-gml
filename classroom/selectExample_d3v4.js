@@ -22,7 +22,6 @@ svg
 })
 .on( "mousemove", function() {
     var s = svg.select("rect");
-    console.log("S is empty?", s.empty())
     if( !s.empty()) {
         var p = d3.mouse( this),
 
