@@ -6,10 +6,48 @@ var min = []
 var mean = []
 var max = []
 
-function main(){
-	separatePerYear()
+// Load the data
+separatePerYear()
+
+function boxPlot(year, tempType){
+	dataset = getDataset(year, tempType)
+	filteredData = getInformations(dataset)
+	console.log(filteredData)
+
+
 }
 
+function getInformations(dataset){
+	var j = 0
+	filteredData = []
+
+	for (var i = 1; i <= 12; i++) {
+		data = []
+		for (; j < dataset.length; j++) {
+			if (dataset[j][1] == i){
+				data.push(dataset[j][0])
+			} else {
+				break
+			}
+		}
+		// Get the infos
+		if (data != []){
+			data.sort(function(a,b) {return a - b;})
+			index = data.length-1
+			supLimit = data[index]
+			infLimit = data[0]
+			fstQuartile = data[7]
+			sndQuartile = data[15]
+			trdQuartile = data[23]
+			filteredData.push([supLimit, infLimit, fstQuartile, sndQuartile, trdQuartile])
+		} else {
+			filteredData.push([])
+		}
+	};
+	return filteredData
+}
+
+// Loads the data in different arrays by the year
 function separatePerYear(){
 	for (var i = 0; i < nbWeather.length; i++){
 		if (nbWeather[i].Year == 2013){
@@ -24,6 +62,7 @@ function separatePerYear(){
 	}
 }
 
+
 function getDataset(year, tempType){
 	min = []
 	med = []
@@ -31,50 +70,50 @@ function getDataset(year, tempType){
 	if (year == 2013){
 		for (var i = 0; i < twentythirteen.length; i++){
 			if (tempType == 'min'){
-				min.push(twentythirteen[i].MinTempF)
+				min.push([twentythirteen[i].MinTempF, twentythirteen[i].Month])
 			} else if (tempType == 'med'){
-				med.push(twentythirteen[i].MeanTempF)
+				med.push([twentythirteen[i].MeanTempF, twentythirteen[i].Month])
 			} else if (tempType == 'max'){
-				max.push(twentythirteen[i].MaxTempF)
+				max.push([twentythirteen[i].MaxTempF, twentythirteen[i].Month])
 			}
 		}
 	} else if (year == 2014){
 		for (var i = 0; i < twentyfourteen.length; i++){
 			if (tempType == 'min'){
-				min.push(twentyfourteen[i].MinTempF)
+				min.push([twentyfourteen[i].MinTempF, twentyfourteen[i].Month])
 			} else if (tempType == 'med'){
-				med.push(twentyfourteen[i].MeanTempF)
+				med.push([twentyfourteen[i].MeanTempF, twentyfourteen[i].Month])
 			} else if (tempType == 'max'){
-				max.push(twentyfourteen[i].MaxTempF)
+				max.push([twentyfourteen[i].MaxTempF, twentyfourteen[i].Month])
 			}
 		}			
 	} else if (year == 2015){
 		for (var i = 0; i < twentyfifteen.length; i++){
 			if (tempType == 'min'){
-				min.push(twentyfifteen[i].MinTempF)
+				min.push([twentyfifteen[i].MinTempF, twentyfifteen[i].Month])
 			} else if (tempType == 'med'){
-				med.push(twentyfifteen[i].MeanTempF)
+				med.push([twentyfifteen[i].MeanTempF, twentyfifteen[i].Month])
 			} else if (tempType == 'max'){
-				max.push(twentyfifteen[i].MaxTempF)
+				max.push([twentyfifteen[i].MaxTempF, twentyfifteen[i].Month])
 			}
 		}
 	} else if (year == 2016){
 		for (var i = 0; i < twentysixteen.length; i++){
 			if (tempType == 'min'){
-				min.push(twentysixteen[i].MinTempF)
+				min.push([twentysixteen[i].MinTempF, twentysixteen[i].Month])
 			} else if (tempType == 'med'){
-				med.push(twentysixteen[i].MeanTempF)
+				med.push([twentysixteen[i].MeanTempF, twentysixteen[i].Month])
 			} else if (tempType == 'max'){
-				max.push(twentysixteen[i].MaxTempF)
+				max.push([twentysixteen[i].MaxTempF, twentysixteen[i].Month])
 			}
 		}
 	}
 
 	if (tempType == 'min'){
-		return min.sort()
+		return min
 	} else if (tempType == 'med'){
-		return med.sort()
+		return med
 	} else if (tempType == 'max'){
-		return max.sort()
+		return max
 	}
 }
