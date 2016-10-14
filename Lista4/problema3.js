@@ -1,5 +1,5 @@
-var width = 960,
-    height = 1060;
+var width = 1320,
+    height = 760;
 var partidos = ["PP", "PSB", "PSC", "PT", "PEN", "PMDB", "PTB", "PRB", "PROS", "PDT", "PSDB", "PRTB", "PSDC", "PC do B", "PTC", "PSD", "PRP", "PSOL", "PSL", "PPS", "SD", "REDE", "PV", "PPL", "DEM", "PR", "PHS", "PMN", "PCB", "PSTU", "PCO"]
 
 var format = d3.format(",d");
@@ -17,7 +17,6 @@ var treemap = d3.treemap()
     .padding(1)
     .round(true);
 
-var data = []
 d3.csv("cand_ver_recife_2016.csv", type, function(error, data) {
   if (error) throw error;
 
@@ -29,21 +28,6 @@ d3.csv("cand_ver_recife_2016.csv", type, function(error, data) {
   };
   data = extra.concat(data);
   console.log(data)
-
-  // part = ''
-  // for (var i = 0; i < data1.length; i++) {
-  //     if (i == 0){
-  //       // insert root
-  //       data.push({Candidato : "Politica"})
-  //       part = data1[0].Partido
-  //       data.push({Candidato:"Politica.", Partido:part})
-  //     } else if (data1[i].Partido != part){
-  //       part = data1[i].Partido
-  //       data.push({Candidato:"Politica.", Partido:part})
-  //     } else {
-  //       data.push(data1[i])
-  //     }
-  // }
     
   var root = stratify(data)
       .sum(function(d) { return d.Votos; })
@@ -61,13 +45,13 @@ d3.csv("cand_ver_recife_2016.csv", type, function(error, data) {
       .style("top", function(d) { return d.y0 + "px"; })
       .style("width", function(d) { return d.x1 - d.x0 + "px"; })
       .style("height", function(d) { return d.y1 - d.y0 + "px"; })
-      .style("background", function(d) { while (d.depth > 1) d = d.parent; return color(d.id); })
+      .style("background", function(d) { while (d.depth > 1) d = d.parent; console.log(d); return color(d.id); })
     .append("div")
       .attr("class", "node-label")
-      .text(function(d) { return d.Candidato; })
+      .text(function(d) { if (d.depth > 1) return d.id; })
     .append("div")
       .attr("class", "node-value")
-      .text(function(d) { return format(d.Votos); });
+      .text(function(d) { return format(d.value); });
 });
 
 function type(d) {
