@@ -1,3 +1,6 @@
+// Tive pouco tempo devido a grande demanda da graduação e portanto os partidos não possuem
+// as cores correspondente ao mundo real. Caso sobre tempo, realizarei o ajuste.
+
 var width = 1320,
     height = 760;
 var partidos = ["PP", "PSB", "PSC", "PT", "PEN", "PMDB", "PTB", "PRB", "PROS", "PDT", "PSDB", "PRTB", "PSDC", "PC do B", "PTC", "PSD", "PRP", "PSOL", "PSL", "PPS", "SD", "REDE", "PV", "PPL", "DEM", "PR", "PHS", "PMN", "PCB", "PSTU", "PCO"]

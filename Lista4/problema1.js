@@ -7,9 +7,9 @@ var mean = []
 var max = []
 
 //Width and height
-var margin = {top: 10, right: 20, bottom: 10, left: 20};
-var width = 900 - margin.left - margin.right;
-var height = 500 - margin.top - margin.bottom;
+var margin = {top: 10, right: 30, bottom: 10, left: 20};
+var width = 1300 - margin.left - margin.right;
+var height = 700 - margin.top - margin.bottom;
 
 
 //Create SVG element
@@ -17,44 +17,74 @@ var height = 500 - margin.top - margin.bottom;
 	.append("svg")
 	.attr("width", width + margin.left + margin.right)
 	.attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("transform", "translate(" + 0 + "," + -200 + ")");
-
+		.append("g")
+		.attr("transform", "translate(" + 0 + "," + 500 + ") scale(" + 1 + "," + -1 + ")")
 // Load the data
 separatePerYear()
+
+var x = d3.scaleBand().rangeRound(0, width);
+var y = d3.scaleLinear().range([height, 0]);
+
+x.domain(data.map(function(d){ return d["Month"];}))
+y.domain([tmin*5, tmax*6])
 
 function boxPlot(year, tempType){
 	dataset = getDataset(year, tempType)
 	filteredData = getInformations(dataset)
-	console.log(filteredData)
 
-	d3.select("svg").selectAll("line").data(filteredData).enter().append("line")
-        .attr("x1",
-            function(d, i){
-                return (i*30);
-            })
-        .attr("y1",
-            function(data){
-            	console.log(data);
-            	return (data[1]);
-            })
-        .attr("x2",
-            function(d, i){
-                return (i*30);
-            })
-        .attr("y2",
-            function(data){
-            	console.log(data);
-            	return (data[2]);
-            })     
-}
+	
+	var line = d3.select("g").selectAll("line").data(filteredData);
+	var rectangles = d3.select("g").selectAll("rect").data(filteredData)
+
+	line.enter().append("line")
+        .attr("x1", function(d){ return (d.month*90); })
+        .attr("y1", function(d){ return (d.supLimit*5); })
+        .attr("x2", function(d){ return (d.month*90); })
+        .attr("y2", function(d){ return (d.infLimit*5); })
+        .attr("stroke", 'black'); 
+    
+    rectangles.enter().append("rect")
+        .attr("x", function(d){ return (d.month*90 - 25); })
+        .attr("y", function(d){ return (d.fstQuartile*5); })
+        .attr("height", function(d){ return ((d.trdQuartile-d.fstQuartile)*5); })
+        .attr("width", function(d){ return (50); })
+        .attr("stroke", 'black')
+        .attr("fill", 'white');  
+        
+	line.enter().append("line")
+        .attr("x1", function(d){ return (d.month*90 - 25); })
+        .attr("y1", function(d){ return (d.sndQuartile*5); })
+        .attr("x2", function(d){ return (d.month*90 + 25); })
+        .attr("y2", function(d){ return (d.sndQuartile*5); })
+        .attr("stroke", 'black');   
+    
+
+    line.exit().remove();
+	rectangles.exit().remove();
+
+
+	line
+        .attr("y1", function(d){ return (d.supLimit*5); })
+        .attr("y2", function(d){ return (d.infLimit*5); })
+    
+    rectangles
+        .attr("y", function(d){ return (d.fstQuartile*5); })
+        .attr("height", function(d){ return ((d.trdQuartile-d.fstQuartile)*5); });  
+        
+	line
+        .attr("y1", function(d){ return (d.sndQuartile*5); })
+        .attr("y2", function(d){ return (d.sndQuartile*5); })
+	}
+    
 
 function getInformations(dataset){
 	var j = 0
 	filteredData = []
 
+	// 12 pairs of data (temperature, month)
 	for (var i = 1; i <= 12; i++) {
 		data = []
+		//go through all the dataset getting the data from the months
 		for (; j < dataset.length; j++) {
 			if (dataset[j][1] == i){
 				data.push(dataset[j][0])
@@ -66,12 +96,15 @@ function getInformations(dataset){
 		if (data != []){
 			data.sort(function(a,b) {return a - b;})
 			index = data.length-1
-			supLimit = data[index]
-			infLimit = data[0]
-			fstQuartile = data[7]
-			sndQuartile = data[15]
-			trdQuartile = data[23]
-			filteredData.push([supLimit, infLimit, fstQuartile, sndQuartile, trdQuartile])
+			info = {
+				month : i,
+				supLimit : data[index],
+				infLimit : data[0],
+				fstQuartile : data[7],
+				sndQuartile : data[15],
+				trdQuartile : data[23]
+			}
+			filteredData.push(info)
 		} else {
 			filteredData.push([])
 		}
