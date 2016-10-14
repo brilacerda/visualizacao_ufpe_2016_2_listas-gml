@@ -6,6 +6,20 @@ var min = []
 var mean = []
 var max = []
 
+//Width and height
+var margin = {top: 10, right: 20, bottom: 10, left: 20};
+var width = 900 - margin.left - margin.right;
+var height = 500 - margin.top - margin.bottom;
+
+
+//Create SVG element
+    var svg = d3.select("body")
+	.append("svg")
+	.attr("width", width + margin.left + margin.right)
+	.attr("height", height + margin.top + margin.bottom)
+	.append("g")
+	.attr("transform", "translate(" + 0 + "," + -200 + ")");
+
 // Load the data
 separatePerYear()
 
@@ -14,7 +28,25 @@ function boxPlot(year, tempType){
 	filteredData = getInformations(dataset)
 	console.log(filteredData)
 
-
+	d3.select("svg").selectAll("line").data(filteredData).enter().append("line")
+        .attr("x1",
+            function(d, i){
+                return (i*30);
+            })
+        .attr("y1",
+            function(data){
+            	console.log(data);
+            	return (data[1]);
+            })
+        .attr("x2",
+            function(d, i){
+                return (i*30);
+            })
+        .attr("y2",
+            function(data){
+            	console.log(data);
+            	return (data[2]);
+            })     
 }
 
 function getInformations(dataset){
