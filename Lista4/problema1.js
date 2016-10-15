@@ -149,7 +149,6 @@ function getInformations(dataset){
 		}
 		// Get the infos
 		if (data.length != 0){
-			console.log("data", data)
 			data.sort(function(a,b) {return a - b;})
 			index = data.length-1
 			y_max = data[index]
@@ -238,3 +237,5 @@ function getDataset(year, tempType){
 		return max
 	}
 }
+
+boxPlot(2015, "med")
