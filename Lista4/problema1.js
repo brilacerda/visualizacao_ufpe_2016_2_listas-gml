@@ -11,8 +11,8 @@ var y_min = 100
 
 //Width and height
 var margin = {top: 10, right: 50, bottom: 10, left: 20};
-var width = 1300 - margin.left - margin.right;
-var height = 600 - margin.top - margin.bottom;
+var width = 1200 - margin.left - margin.right;
+var height = 550 - margin.top - margin.bottom;
 
 
 //Create SVG element
@@ -34,7 +34,7 @@ function boxPlot(year, tempType){
 	filteredData = getInformations(dataset);
 
 	yScale.domain([y_max, y_min])
-	console.log(y_max, y_min)
+	console.log("yScale ", y_max, y_min)
 	
 	d3.select('svg').append("g")
     .attr("class", "xAxis")
@@ -45,11 +45,14 @@ function boxPlot(year, tempType){
     .attr("class", "yAxis")
     .call(d3.axisLeft(yScale));
 	
-	var line = d3.select("g").selectAll("line").data(filteredData);
+	var line1 = d3.select("g").selectAll("line").data(filteredData);
+	var line2 = d3.select("g").selectAll("line").data(filteredData);
+	var line3 = d3.select("g").selectAll("line").data(filteredData);
+	var line4 = d3.select("g").selectAll("line").data(filteredData);
 	var rectangles = d3.select("g").selectAll("rect").data(filteredData)
 
 
-	line.enter().append("line")
+	line1.enter().append("line")
         .attr("x1", function(d){ return (d.month*90); })
         .attr("y1", function(d){ return (d.supLimit*5); })
         .attr("x2", function(d){ return (d.month*90); })
@@ -64,20 +67,20 @@ function boxPlot(year, tempType){
         .attr("stroke", 'black')
         .attr("fill", 'white');  
         
-	line.enter().append("line")
+	line2.enter().append("line")
         .attr("x1", function(d){ return (d.month*90 - 25); })
         .attr("y1", function(d){ return (d.sndQuartile*5); })
         .attr("x2", function(d){ return (d.month*90 + 25); })
         .attr("y2", function(d){ return (d.sndQuartile*5); })
         .attr("stroke", 'black');   
     
-    line.enter().append("line")
+    line3.enter().append("line")
         .attr("x1", function(d){ return (d.month*90 - 15); })
         .attr("y1", function(d){ return (d.supLimit*5); })
         .attr("x2", function(d){ return (d.month*90 + 15); })
         .attr("y2", function(d){ return (d.supLimit*5); })
         .attr("stroke", 'black');
-    line.enter().append("line")
+    line4.enter().append("line")
         .attr("x1", function(d){ return (d.month*90 - 15); })
         .attr("y1", function(d){ return (d.infLimit*5); })
         .attr("x2", function(d){ return (d.month*90 + 15); })
@@ -85,21 +88,47 @@ function boxPlot(year, tempType){
         .attr("stroke", 'black');
 
 
-    line.exit().remove();
+    line1.exit().remove();
+    line2.exit().remove();
+    line3.exit().remove();
+    line4.exit().remove();
 	rectangles.exit().remove();
 
 
-	line
+	line1
+        .attr("x1", function(d){ return (d.month*90); })
         .attr("y1", function(d){ return (d.supLimit*5); })
+        .attr("x2", function(d){ return (d.month*90); })
         .attr("y2", function(d){ return (d.infLimit*5); })
+        .attr("stroke", 'black'); 
     
     rectangles
+        .attr("x", function(d){ return (d.month*90 - 25); })
         .attr("y", function(d){ return (d.fstQuartile*5); })
-        .attr("height", function(d){ return ((d.trdQuartile-d.fstQuartile)*5); });  
+        .attr("height", function(d){ return ((d.trdQuartile-d.fstQuartile)*5); })
+        .attr("width", function(d){ return (50); })
+        .attr("stroke", 'black')
+        .attr("fill", 'white');  
         
-	line
+	line2
+        .attr("x1", function(d){ return (d.month*90 - 25); })
         .attr("y1", function(d){ return (d.sndQuartile*5); })
+        .attr("x2", function(d){ return (d.month*90 + 25); })
         .attr("y2", function(d){ return (d.sndQuartile*5); })
+        .attr("stroke", 'black');   
+    
+    line3
+        .attr("x1", function(d){ return (d.month*90 - 15); })
+        .attr("y1", function(d){ return (d.supLimit*5); })
+        .attr("x2", function(d){ return (d.month*90 + 15); })
+        .attr("y2", function(d){ return (d.supLimit*5); })
+        .attr("stroke", 'black');
+    line4
+        .attr("x1", function(d){ return (d.month*90 - 15); })
+        .attr("y1", function(d){ return (d.infLimit*5); })
+        .attr("x2", function(d){ return (d.month*90 + 15); })
+        .attr("y2", function(d){ return (d.infLimit*5); })
+        .attr("stroke", 'black');
 	}
     
 
@@ -119,7 +148,8 @@ function getInformations(dataset){
 			}
 		}
 		// Get the infos
-		if (data != []){
+		if (data.length != 0){
+			console.log("data", data)
 			data.sort(function(a,b) {return a - b;})
 			index = data.length-1
 			y_max = data[index]
